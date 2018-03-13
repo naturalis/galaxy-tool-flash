@@ -1,6 +1,9 @@
 #!/usr/bin/python
 """
-Flash   V1.0    martenhoogeveen@naturalis.nl
+FLASH   V1.0    martenhoogeveen@naturalis.nl
+
+This is a wrapper for the tool FLASH (https://ccb.jhu.edu/software/FLASH/).
+FLASH can merge paired-end sequencing data. The wrapper handles a zip file with one or more pairs.
 """
 import sys, os, argparse
 import glob
