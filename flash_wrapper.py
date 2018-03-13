@@ -1,6 +1,6 @@
 #!/usr/bin/python
 """
-
+Flash   V1.0    martenhoogeveen@naturalis.nl
 """
 import sys, os, argparse
 import glob
