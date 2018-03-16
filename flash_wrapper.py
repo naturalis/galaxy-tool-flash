@@ -94,6 +94,11 @@ def get_files(tempdir):
     return pairs
 
 def gunzip(tempdir):
+    """
+    If the input zip file contains gzip files they need to be gunzipped. The files are gunzipped and placed in the
+    paired files folder. The characters dash dot and space are replaced by an underscore.
+    :param tempdir: tempdir path
+    """
     filetype = tempdir + "/paired_files/*.gz"
     gzfiles = [os.path.basename(x) for x in sorted(glob.glob(filetype))]
     for x in gzfiles:
@@ -102,6 +107,13 @@ def gunzip(tempdir):
         call(["mv", tempdir + "/paired_files/" + x[:-3], tempdir + "/paired_files/" +gunzip_filename[0].translate((string.maketrans("-. " , "___")))+gunzip_filename[1]])
 
 def flash(pairs, tempdir):
+    """
+    This method execute the FLASH merger. The output files are written to the folder merged_files. All the output files
+    will be moved to the output folder depending on the forward parameter. Later the output folder will be zipped
+    :param pairs: dictionairy with the filenames.
+    :param tempdir: tempdit path
+    :return:
+    """
     for x in pairs:
         basename = pairs[x][0].split("_R1")[0]
         out, error = Popen(["flash", tempdir+"/paired_files/"+pairs[x][0], tempdir+"/paired_files/"+pairs[x][1],"-x", args.mismatch ,"-m", args.minforward, "-M", args.maxoverlap, "-d", tempdir+"/merged_files/" ,"-o", basename], stdout=PIPE, stderr=PIPE).communicate()
@@ -116,6 +128,11 @@ def flash(pairs, tempdir):
             call(["mv",  tempdir+"/merged_files/"+basename + ".extendedFrags.fastq", tempdir + "/output/" + basename + "_merged.fastq"])
 
 def zip_it_up(tempdir):
+    """
+    Files in the outfolder will be zipped and moved to the galaxy output path.
+    :param tempdir: tampdir path
+    :return:
+    """
     #call(["mv", tempdir + "/adminlog.log", tempdir+"/output/adminlog.log"])
     call(["zip","-r","-j", tempdir+".zip", tempdir+"/output/"],stdout=open(os.devnull, 'wb'))
     call(["mv", tempdir + ".zip", args.out])
@@ -133,9 +150,6 @@ def main():
     flash(pairs, tempdir)
     zip_it_up(tempdir)
     call(["rm", "-rf", tempdir])
-
-
-
 
 if __name__ == '__main__':
     main()
