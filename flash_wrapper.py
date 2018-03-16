@@ -14,26 +14,44 @@ from subprocess import call, Popen, PIPE
 # Retrieve the commandline arguments
 parser = argparse.ArgumentParser(description='')
 requiredArguments = parser.add_argument_group('required arguments')
-
+#Inputfile in zip format
 requiredArguments.add_argument('-i', '--input', metavar='input zipfile', dest='inzip', type=str,
                                help='Inputfile in zip format', required=True)
+#output file in zip format
 requiredArguments.add_argument('-o', '--output', metavar='output', dest='out', type=str,
                                help='Output in zip format', required=True)
+#Log output
 requiredArguments.add_argument('-ol', '--log_output', metavar='log output', dest='out_log', type=str,
                                help='Log file', required=True)
+#A zipfile can contain FASTQ or gzip files,the user needs to set this parameter.
 requiredArguments.add_argument('-t', '--input_type', metavar='FASTQ or GZ input', dest='input_type', type=str,
                                help='Sets the input type, gz or FASTQ', required=True)
+#This parameter determines what happens with the reads that do not merge. This are the three options:
+#discard: non-merged reads are discarded
+#add: forward reads are added to the fastq file with merged reads
+#seperate: the merged and forward non-merged reads will be outputted in seprated files
 requiredArguments.add_argument('-f', '--forward', metavar='Add non-megerd forward reads', dest='forward', type=str,
                                help='Adds the forward reads to the merged reads file. Option can be discard, add or seperate', required=True)
+#minimum bases that need to overlap to merge the reads
 requiredArguments.add_argument('-m', '--min-overlap', metavar='minimum overlap', dest='minforward', type=str,
                                help='minimum overlap', required=True)
+#The allowed mismatch percentage for merging
 requiredArguments.add_argument('-x', '--mis-ratio', metavar='mismatch ratio', dest='mismatch', type=str,
                                help='mismatch ratio', required=True)
+#maximum number of bases that are allowed to overlap
 requiredArguments.add_argument('-M', '--max-overlap', metavar='max overlap', dest='maxoverlap', type=str,
                                help='maxoverlap', required=True)
 args = parser.parse_args()
 
 def admin_log(tempdir, out=None, error=None, function=""):
+    """
+    A log file will be made and log data will be written to that file. Most of the time this is the stdout and stderror
+    of the shell. In the log it says if the message in is coming from stdout or stderror.
+    :param tempdir: the tempdir path that contains the log file
+    :param out: stdout or out message
+    :param error: stderror or error message
+    :param function: name of the function or step that generated the message
+    """
     with open(tempdir + "/adminlog.log", 'a') as adminlogfile:
         seperation = 60 * "="
         if out:
@@ -42,11 +60,23 @@ def admin_log(tempdir, out=None, error=None, function=""):
             adminlogfile.write("error " + function + "\n" + seperation + "\n" + error + "\n\n")
 
 def make_output_folders(tempdir):
+    """
+    Output en work folders are created. The wrapper uses these folders to save the files that are used between steps.
+    :param tempdir: tempdir path
+    """
     call(["mkdir", tempdir + "/paired_files"])
     call(["mkdir", tempdir + "/merged_files"])
     call(["mkdir", tempdir + "/output"])
 
 def get_files(tempdir):
+    """
+    This function finds the file pairs. First it looks at the beginning of the filename before the seperator (R1)
+    after that it looks for a file with that same beginning. The are stored in a list, and all the lists are stored
+    in a dictionairy. Example: {seqfile:[seqfile1_R1_miseq.fastq,seqfile1_R2_miseq.fastq]}
+    :param tempdir: the tempdir path that contains the log file
+    :return: A dictionairy where the keys are a part of the file name en the values a list with the forward and reverse
+    filename.
+    """
     filetype = tempdir+"/paired_files/*.fastq"
     gzfiles = [os.path.basename(x) for x in sorted(glob.glob(filetype))]
     reverse=[]
