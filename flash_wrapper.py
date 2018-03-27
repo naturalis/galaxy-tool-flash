@@ -17,12 +17,9 @@ requiredArguments = parser.add_argument_group('required arguments')
 #Inputfile in zip format
 requiredArguments.add_argument('-i', '--input', metavar='input zipfile', dest='inzip', type=str,
                                help='Inputfile in zip format', required=True)
-#output file in zip format
-requiredArguments.add_argument('-o', '--output', metavar='output', dest='out', type=str,
-                               help='Output in zip format', required=True)
-#Log output
-requiredArguments.add_argument('-ol', '--log_output', metavar='log output', dest='out_log', type=str,
-                               help='Log file', required=True)
+#output folder
+requiredArguments.add_argument('-of', '--folder_output', metavar='folder output', dest='out_folder', type=str,
+                               help='Folder name for the output files', required=True)
 #A zipfile can contain FASTQ or gzip files,the user needs to set this parameter.
 requiredArguments.add_argument('-t', '--input_type', metavar='FASTQ or GZ input', dest='input_type', type=str,
                                help='Sets the input type, gz or FASTQ', required=True)
@@ -52,7 +49,7 @@ def admin_log(tempdir, out=None, error=None, function=""):
     :param error: stderror or error message
     :param function: name of the function or step that generated the message
     """
-    with open(tempdir + "/adminlog.log", 'a') as adminlogfile:
+    with open(tempdir + "/log.log", 'a') as adminlogfile:
         seperation = 60 * "="
         if out:
             adminlogfile.write("out "+ function + " \n" + seperation + "\n" + out + "\n\n")
@@ -64,6 +61,7 @@ def make_output_folders(tempdir):
     Output en work folders are created. The wrapper uses these folders to save the files that are used between steps.
     :param tempdir: tempdir path
     """
+    call(["mkdir","-p", tempdir])
     call(["mkdir", tempdir + "/paired_files"])
     call(["mkdir", tempdir + "/merged_files"])
     call(["mkdir", tempdir + "/output"])
@@ -111,8 +109,7 @@ def flash(pairs, tempdir):
     This method execute the FLASH merger. The output files are written to the folder merged_files. All the output files
     will be moved to the output folder depending on the forward parameter. Later the output folder will be zipped
     :param pairs: dictionairy with the filenames.
-    :param tempdir: tempdit path
-    :return:
+    :param tempdir: tempdir path
     """
     for x in pairs:
         basename = pairs[x][0].split("_R1")[0]
@@ -121,26 +118,26 @@ def flash(pairs, tempdir):
         if args.forward == "add":
             with open(tempdir+"/output/"+basename+"_merged_forward.fastq", 'a') as outfile:
                 call(["cat", tempdir+"/merged_files/"+basename+".extendedFrags.fastq", tempdir+"/merged_files/"+basename+".notCombined_1.fastq"],stdout=outfile)
+            call(["rm", tempdir + "/merged_files/" + basename + ".notCombined_1.fastq", tempdir + "/merged_files/" + basename + ".extendedFrags.fastq"])
         if args.forward == "seperate":
             call(["mv",  tempdir+"/merged_files/"+basename+".extendedFrags.fastq", tempdir+"/output/"+basename+"_merged.fastq"])
             call(["mv",  tempdir+"/merged_files/"+basename + ".notCombined_1.fastq", tempdir + "/output/" + basename + "_forward.fastq"])
         if args.forward == "discard":
             call(["mv",  tempdir+"/merged_files/"+basename + ".extendedFrags.fastq", tempdir + "/output/" + basename + "_merged.fastq"])
+            call(["rm", tempdir+"/merged_files/"+basename + ".notCombined_1.fastq"])
+        call(["rm", tempdir+"/paired_files/"+pairs[x][0], tempdir+"/paired_files/"+pairs[x][1], tempdir + "/merged_files/" + basename + ".histogram", tempdir+"/merged_files/"+basename+".hist", tempdir+"/merged_files/"+basename+".notCombined_2.fastq"])
 
 def zip_it_up(tempdir):
     """
     Files in the outfolder will be zipped and moved to the galaxy output path.
-    :param tempdir: tampdir path
+    :param tempdir: tempdir path
     :return:
     """
-    #call(["mv", tempdir + "/adminlog.log", tempdir+"/output/adminlog.log"])
-    call(["zip","-r","-j", tempdir+".zip", tempdir+"/output/"],stdout=open(os.devnull, 'wb'))
-    call(["mv", tempdir + ".zip", args.out])
-    call(["cp", tempdir+"/adminlog.log", args.out_log])
-
+    call(["zip","-r","-j", tempdir+"/merged.zip", tempdir+"/output/"],stdout=open(os.devnull, 'wb'))
+    call(["rm", "-rf", tempdir + "/output", tempdir + "/paired_files", tempdir + "/merged_files"])
 
 def main():
-    tempdir = Popen(["mktemp", "-d", "/media/GalaxyData/files/XXXXXX"], stdout=PIPE, stderr=PIPE).communicate()[0].strip()
+    tempdir = args.out_folder
     make_output_folders(tempdir)
     zip_out, zip_error = Popen(["unzip", args.inzip, "-d", tempdir.strip() + "/paired_files"], stdout=PIPE,stderr=PIPE).communicate()
     admin_log(tempdir, zip_out, zip_error)
@@ -149,7 +146,6 @@ def main():
     pairs = get_files(tempdir)
     flash(pairs, tempdir)
     zip_it_up(tempdir)
-    call(["rm", "-rf", tempdir])
 
 if __name__ == '__main__':
     main()

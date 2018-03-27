@@ -1,12 +1,6 @@
 #!/bin/bash
-flash_wrapper.py -i $1 -o $2 -ol $3 -t $4 -f $5 -m $6 -x $7 -M $8
-
-
-
-
-
-
-
-
-
-
+outlocation=$(mktemp -d /media/GalaxyData/files/XXXXXX)
+flash_wrapper.py -i $1 -of $outlocation -t $4 -f $5 -m $6 -x $7 -M $8
+mv $outlocation"/log.log" $3
+mv $outlocation"/merged.zip" $2
+rm -rf $outlocation 
