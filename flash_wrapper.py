@@ -102,7 +102,8 @@ def gunzip(tempdir):
     for x in gzfiles:
         call(["gunzip", tempdir + "/paired_files/" + x])
         gunzip_filename = os.path.splitext(x[:-3])
-        call(["mv", tempdir + "/paired_files/" + x[:-3], tempdir + "/paired_files/" +gunzip_filename[0].translate((string.maketrans("-. " , "___")))+gunzip_filename[1]])
+        if x[:-3] != gunzip_filename[0].translate((string.maketrans("-. ", "___"))) + gunzip_filename[1]:
+            call(["mv", tempdir + "/paired_files/" + x[:-3], tempdir + "/paired_files/" +gunzip_filename[0].translate((string.maketrans("-. " , "___")))+gunzip_filename[1]])
 
 def flash(pairs, tempdir):
     """
