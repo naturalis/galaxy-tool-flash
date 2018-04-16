@@ -33,7 +33,8 @@ sudo chmod 777 galaxy-tool-flash/flash_wrapper.py
 sudo ln -s /home/galaxy/Tools/galaxy-tool-flash/flash_wrapper.py /usr/local/bin/flash_wrapper.py
 ```
 ```
-mv galaxy-tool-flash/*flash.* /home/galaxy/galaxy/tools/identify/
+sudo cp galaxy-tool-flash/flash.sh /home/galaxy/galaxy/tools/identify/flash.sh
+sudo cp galaxy-tool-flash/flash.xml /home/galaxy/galaxy/tools/identify/flash.xml
 ```
 Add the following line to /home/galaxy/galaxy/config/tool_conf.xml
 ```
