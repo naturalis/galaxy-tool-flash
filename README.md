@@ -1,23 +1,6 @@
 # galaxy-tool-flash
-wrapper for FLASH
+wrapper for FLASH, this repo can be used for the new (03-04-2019) galaxy 19.01 Naturalis server. The old galaxy 16.04 server is not supported anymore with this tool.
 ## Getting Started
-### Prerequisites
-Installing FLASH on the Naturalis galaxy server. Most of the tools are installed in the Tools folder, below are instructions to install FLASH.
-```
-mkdir /home/galaxy/Tools/flash
-```
-```
-cd /home/galaxy/Tools/flash
-```
-```
-sudo wget http://ccb.jhu.edu/software/FLASH/FLASH-1.2.11-Linux-x86_64.tar.gz
-```
-```
-sudo tar xzf FLASH-1.2.11-Linux-x86_64.tar.gz
-```
-```
-sudo ln -s /home/galaxy/Tools/flash/FLASH-1.2.11-Linux-x86_64/flash /usr/local/bin/flash
-```
 ### Installing
 Installing the tool for use in Galaxy
 ```
