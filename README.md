@@ -1,5 +1,6 @@
 # galaxy-tool-flash
-wrapper for FLASH, this repo can be used for the new (03-04-2019) galaxy 19.01 Naturalis server. The old galaxy 16.04 server is not supported anymore with this tool.
+wrapper for FLASH, this repo can be used for the new (03-04-2019) galaxy 19.01 Naturalis server. The old galaxy 16.04 server is not supported anymore with this tool. Although FLASh is also available from the toolshed, this specific wrapper fits better in the pipeline because it can handle zip files.
+
 ## Getting Started
 ### Installing
 Installing the tool for use in Galaxy
