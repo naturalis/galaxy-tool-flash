@@ -1,7 +1,13 @@
 <tool id="flash merger" name="Merge reads">
 <description>Merge reads</description>
-<command interpreter="bash">
-flash.sh
+    <requirements>
+        <requirement type="package" version="1.2.11">flash</requirement>
+        <requirement type="package" version="2.7">python</requirement>
+	<requirement type="package">biopython</requirement>
+    </requirements>
+<command>
+<![CDATA[
+bash '$__tool_directory__/flash.sh'
 $input
 $output_zip
 $output_log
@@ -9,7 +15,7 @@ $input2
 $input3
 $minoverlap
 $mismatch
-$maxoverlap
+$maxoverlap]]>
 
 </command>
 
@@ -44,6 +50,8 @@ $maxoverlap
 </test>
 </tests>
 <help>
-Merge sequences
+<![CDATA[
+        merge
+    ]]>
 </help>
 </tool>
