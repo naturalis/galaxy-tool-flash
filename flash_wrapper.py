@@ -35,6 +35,8 @@ requiredArguments.add_argument('-m', '--min-overlap', metavar='minimum overlap',
 #The allowed mismatch percentage for merging
 requiredArguments.add_argument('-x', '--mis-ratio', metavar='mismatch ratio', dest='mismatch', type=str,
                                help='mismatch ratio', required=True)
+requiredArguments.add_argument('-d', metavar='both directions(allow outies)', dest='allow_outies', type=str,
+                                                              help='allow_outies', required=True)
 #maximum number of bases that are allowed to overlap
 requiredArguments.add_argument('-M', '--max-overlap', metavar='max overlap', dest='maxoverlap', type=str,
                                help='maxoverlap', required=True)
@@ -114,7 +116,12 @@ def flash(pairs, tempdir):
     """
     for x in pairs:
         basename = pairs[x][0].split("_R1")[0]
-        out, error = Popen(["flash", tempdir+"/paired_files/"+pairs[x][0], tempdir+"/paired_files/"+pairs[x][1],"-x", args.mismatch ,"-m", args.minforward, "-M", args.maxoverlap, "-d", tempdir+"/merged_files/" ,"-o", basename], stdout=PIPE, stderr=PIPE).communicate()
+        if str(args.allow_outies) == "no":
+            out, error = Popen(["flash", tempdir+"/paired_files/"+pairs[x][0], tempdir+"/paired_files/"+pairs[x][1],"-x", args.mismatch ,"-m", args.minforward, "-M", args.maxoverlap, "-d", tempdir+"/merged_files/" ,"-o", basename], stdout=PIPE, stderr=PIPE).communicate()
+        elif str(args.allow_outies) == "yes":
+            out, error = Popen(["flash", tempdir+"/paired_files/"+pairs[x][0], tempdir+"/paired_files/"+pairs[x][1],"-x", args.mismatch ,"-m", args.minforward, "-M", args.maxoverlap, "-d", tempdir+"/merged_files/" ,"--allow-outies" ,"-o", basename], stdout=PIPE, stderr=PIPE).communicate()
+
+
         admin_log(tempdir, out=out, error=error, function="flash")
         if args.forward == "add":
             with open(tempdir+"/output/"+basename+"_merged_forward.fastq", 'a') as outfile:
@@ -150,6 +157,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
