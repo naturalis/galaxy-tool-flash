@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 """
 FLASH   V1.0    Marten Hoogeveen Naturalis
 
