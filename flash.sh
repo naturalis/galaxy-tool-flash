@@ -1,7 +1,10 @@
 #!/bin/bash
 
-#outlocation=$(mktemp -d /media/GalaxyData/database/files/XXXXXX)
+# outlocation=$(mktemp -d /media/GalaxyData/database/files/XXXXXX)
 outlocation=$(mktemp -d /data/files/XXXXXX)
+# sanity check
+echo $outlocation
+python --version
 
 SCRIPTDIR=$(dirname "$(readlink -f "$0")")
 
