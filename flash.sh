@@ -1,10 +1,13 @@
 #!/bin/bash
 
-# outlocation=$(mktemp -d /media/GalaxyData/database/files/XXXXXX)
 outlocation=$(mktemp -d /data/files/XXXXXX)
+
 # sanity check
-echo $outlocation
-python --version
+printf "Conda env: $CONDA_DEFAULT_ENV\n"
+printf "Python version: $(python --version)\n"
+printf "Biopython version: $(conda list | egrep biopython | awk '{print $2}')\n"
+printf "Bash version: ${BASH_VERSION}\n"
+printf "Outlocation: $outlocation\n\n"
 
 SCRIPTDIR=$(dirname "$(readlink -f "$0")")
 
