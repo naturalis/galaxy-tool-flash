@@ -2,11 +2,12 @@
 <!--
 <description>Merge reads</description>
 -->
-    <requirements>
-        <requirement type="package" version="1.2.11">flash</requirement>
-    	<requirement type="package" version="3.7.0">python</requirement>
-		<requirement type="package">biopython</requirement>
-    </requirements>
+	<requirements>
+		<requirement type="package" version="1.2.11">flash</requirement>
+		<requirement type="package" version="3.7.0">python</requirement>
+		<requirement type="package" version="6.0">unzip</requirement>
+		<requirement type="package" version="1.79">biopython</requirement>
+	</requirements>
 <command>
 <![CDATA[
 bash '$__tool_directory__/flash.sh'
@@ -32,12 +33,12 @@ $maxoverlap]]>
 				<param name="minoverlap" type="integer" label="Minimum overlap" value="10" min="1" max="500"/>
 				<param name="maxoverlap" type="integer" label="Maximum overlap" value="300" min="1" max="500"/>
 				<param name="mismatch" type="float" label="mismatch ratio"  value="0.25" min="0.0" max="1"/>
-        <param name="allow_outies" type="boolean" label="Combine read pairs in both orientations" checked="no" truevalue="yes" falsevalue="no"/>
-        <param name="input3" type="select" multiple="false" label="Output">
+				<param name="allow_outies" type="boolean" label="Combine read pairs in both orientations" checked="no" truevalue="yes" falsevalue="no"/>
+				<param name="input3" type="select" multiple="false" label="Output">
 					<option value="discard" selected="true">Output merged reads only</option>
-                    <option value="add">Add non-merged forward reads to merged reads</option>
-                    <option value="seperate">Merged reads and non-merged forward reads in seperated files</option>
-                </param>
+					<option value="add">Add non-merged forward reads to merged reads</option>
+					<option value="seperate">Merged reads and non-merged forward reads in seperated files</option>
+				</param>
 </inputs>
 
 
