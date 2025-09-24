@@ -1,0 +1,14 @@
+name: naturalis_flash
+owner:  duijker.d
+description: "Wrapper for FLASH v.1.2.11." 
+long_description: |
+  "Wrapper for FLASH v.1.2.11. This repo uses Pyhton3 and has been tested with Galaxy v.22.01. Although FLASH is also
+  available from the Toolshed, this wrapper fits better in our pipeline because it can handle zip files ".
+remote_repository_url: https://github.com/naturalis/galaxy-tool-flash.git
+homepage_url: https://github.com/naturalis/galaxy-tool-flash.git
+type: unrestricted
+categories:
+   - "Fasta Manipulation"
+auto_tool_repositories:
+  name_template: naturalis_flash
+  description_template: naturalis_flash
